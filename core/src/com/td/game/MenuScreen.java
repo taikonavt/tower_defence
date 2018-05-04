@@ -24,9 +24,11 @@ public class MenuScreen implements Screen {
     private Sound sound;
     private BitmapFont font32;
     private BitmapFont font96;
+    private TowerDefenseGame game;
 
-    public MenuScreen(SpriteBatch batch) {
+    public MenuScreen(SpriteBatch batch, TowerDefenseGame game) {
         this.batch = batch;
+        this.game = game;
     }
 
     @Override
@@ -71,15 +73,23 @@ public class MenuScreen implements Screen {
         Button btnNewGame = new TextButton("Start New Game", skin, "simpleSkin");
         Button btnExitGame = new TextButton("Exit Game", skin, "simpleSkin");
         Button btnLoadGame = new TextButton("Load Game", skin, "simpleSkin");
-        btnNewGame.setPosition(640 - 160, 180);
+        btnNewGame.setPosition(640 - 160, 300);
+        btnLoadGame.setPosition(640 - 160, 180);
         btnExitGame.setPosition(640 - 160, 60);
-        btnLoadGame.setPosition(640 - 160, 300);
         stage.addActor(btnNewGame);
-        stage.addActor(btnExitGame);
         stage.addActor(btnLoadGame);
+        stage.addActor(btnExitGame);
         btnNewGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                game.setNewGameFlag(true);
+                ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAME);
+            }
+        });
+        btnLoadGame.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setNewGameFlag(false);
                 ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAME);
             }
         });
@@ -87,12 +97,6 @@ public class MenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.exit();
-            }
-        });
-        btnLoadGame.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("load");
             }
         });
     }

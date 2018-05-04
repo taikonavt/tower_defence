@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 
 public class TowerDefenseGame extends Game {
     private SpriteBatch batch;
+    private boolean newGameFlag = true;
 
     // План работ:
     // Система экранов +
@@ -44,5 +45,13 @@ public class TowerDefenseGame extends Game {
     @Override
     public void dispose() {
         batch.dispose();
+    }
+
+    public boolean isNewGame(){
+        return newGameFlag;
+    }
+
+    public void setNewGameFlag(boolean flag){
+        newGameFlag = flag;
     }
 }

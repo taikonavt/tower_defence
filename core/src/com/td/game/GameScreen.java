@@ -18,6 +18,7 @@ import com.td.game.gui.UpperPanel;
 public class GameScreen implements Screen {
     private SpriteBatch batch;
     private BitmapFont font24;
+    private TowerDefenseGame game;
     private Map map;
     private TurretEmitter turretEmitter;
     private MonsterEmitter monsterEmitter;
@@ -47,9 +48,10 @@ public class GameScreen implements Screen {
         return monsterEmitter;
     }
 
-    public GameScreen(SpriteBatch batch, Camera camera) {
+    public GameScreen(SpriteBatch batch, Camera camera, TowerDefenseGame game) {
         this.batch = batch;
         this.camera = camera;
+        this.game = game;
     }
 
     @Override
@@ -59,11 +61,15 @@ public class GameScreen implements Screen {
         selectedCellTexture = atlas.findRegion("cursor");
         map = new Map(atlas);
         font24 = Assets.getInstance().getAssetManager().get("zorque24.ttf", BitmapFont.class);
-        turretEmitter = new TurretEmitter(atlas, this, map);
-        monsterEmitter = new MonsterEmitter(atlas, map, 60);
-        particleEmitter = new ParticleEmitter(atlas.findRegion("star16"));
         mousePosition = new Vector2(0, 0);
-        playerInfo = new PlayerInfo(100, 32);
+        if (game.isNewGame()){
+            turretEmitter = new TurretEmitter(atlas, this, map);
+            monsterEmitter = new MonsterEmitter(atlas, map, 60);
+            particleEmitter = new ParticleEmitter(atlas.findRegion("star16"));
+            playerInfo = new PlayerInfo(100, 32);
+        } else {
+
+        }
         createGUI();
     }
 

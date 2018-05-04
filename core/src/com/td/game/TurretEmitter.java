@@ -136,13 +136,13 @@ public class TurretEmitter implements Serializable {
         }
     }
 
-    public void reload(TextureAtlas atlas, GameScreen gameScreen, Map map){
-        this.loadTurretData();
-        this.gameScreen = gameScreen;
-        this.map = map;
-        this.atlas = atlas;
-        this.turrets =
-    }
+//    public void reload(TextureAtlas atlas, GameScreen gameScreen, Map map){
+//        this.loadTurretData();
+//        this.gameScreen = gameScreen;
+//        this.map = map;
+//        this.atlas = atlas;
+//        this.turrets =
+//    }
 //    public TurretEmitter(TextureAtlas atlas, GameScreen gameScreen, Map map) {
 //        this.loadTurretData();
 //        this.gameScreen = gameScreen;
