@@ -15,6 +15,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.td.game.gui.UpperPanel;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 public class GameScreen implements Screen {
     private SpriteBatch batch;
     private BitmapFont font24;
@@ -62,13 +68,31 @@ public class GameScreen implements Screen {
         map = new Map(atlas);
         font24 = Assets.getInstance().getAssetManager().get("zorque24.ttf", BitmapFont.class);
         mousePosition = new Vector2(0, 0);
+        particleEmitter = new ParticleEmitter(atlas.findRegion("star16"));
         if (game.isNewGame()){
             turretEmitter = new TurretEmitter(atlas, this, map);
             monsterEmitter = new MonsterEmitter(atlas, map, 60);
-            particleEmitter = new ParticleEmitter(atlas.findRegion("star16"));
             playerInfo = new PlayerInfo(100, 32);
         } else {
-
+            ObjectInputStream in = null;
+            try {
+                in = new ObjectInputStream(new FileInputStream(Gdx.files.local("mydata.sav").file()));
+                turretEmitter = (TurretEmitter) in.readObject();
+                monsterEmitter = (MonsterEmitter) in.readObject();//
+                playerInfo = (PlayerInfo) in.readObject();
+                turretEmitter.reload(atlas, this, map);
+                monsterEmitter.reload(atlas, map);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         createGUI();
     }
@@ -177,7 +201,6 @@ public class GameScreen implements Screen {
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         stage.draw();
-
     }
 
     public void update(float dt) {
@@ -186,8 +209,8 @@ public class GameScreen implements Screen {
         ScreenManager.getInstance().getViewport().apply();
         mousePosition.set(Gdx.input.getX(), Gdx.input.getY());
         ScreenManager.getInstance().getViewport().unproject(mousePosition);
-        monsterEmitter.update(dt);
         turretEmitter.update(dt);
+        monsterEmitter.update(dt);
         particleEmitter.update(dt);
         particleEmitter.checkPool();
         checkMonstersAtHome();
@@ -214,6 +237,21 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
+        ObjectOutputStream out = null;
+        try {
+            out = new ObjectOutputStream(new FileOutputStream(Gdx.files.local("mydata.sav").file()));
+            out.writeObject(turretEmitter);
+            out.writeObject(monsterEmitter);
+            out.writeObject(playerInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

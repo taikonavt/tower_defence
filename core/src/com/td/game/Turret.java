@@ -7,19 +7,21 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-public class Turret {
-    private GameScreen gameScreen;
-    private Map map;
+import java.io.Serializable;
+
+public class Turret implements Serializable {
+    private transient GameScreen gameScreen;
+    private transient Map map;
     private int type;
     private int damage;
-    private TextureRegion[] regions;
+    private transient TextureRegion[] regions;
     private Vector2 position;
     private float angle;
     private float range;
     private float fireDelay;
     private float fireTimer;
     private float rotationSpeed;
-    private Monster target;
+    private transient Monster target;
     private boolean active;
 
     public boolean isActive() {
@@ -141,5 +143,13 @@ public class Turret {
                 gameScreen.getPlayerInfo().addMoney(10);
             }
         }
+    }
+
+    public void reload(TextureRegion[] regions, GameScreen gameScreen, Map map){
+        this.regions = regions;
+        this.gameScreen = gameScreen;
+        this.map = map;
+        this.rotationSpeed = 270.0f;
+
     }
 }

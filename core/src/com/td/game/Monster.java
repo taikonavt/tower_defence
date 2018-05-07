@@ -8,22 +8,25 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-public class Monster {
-    private Map map;
-    private TextureRegion texture;
-    private TextureRegion textureBackHp;
-    private TextureRegion textureHp;
+import java.io.Serializable;
+
+public class Monster implements Serializable {
+    private transient Map map;
+    private transient TextureRegion texture;
+    private transient TextureRegion textureBackHp;
+    private transient TextureRegion textureHp;
     private Vector2 position;
     private Vector2 velocity;
     private float speed;
     private boolean active;
-    private Map.Route route;
+    private int routeIndex;
+    private transient Map.Route route;
     private int routeCounter;
     private int lastCellX, lastCellY;
     private float offsetX, offsetY;
     private int hp;
     private int hpMax;
-    private StringBuilder sbHUD;
+    private transient StringBuilder sbHUD;
 
     public boolean isActive() {
         return active;
@@ -51,7 +54,8 @@ public class Monster {
         this.textureBackHp = atlas.findRegion("monsterBackHP");
         this.textureHp = atlas.findRegion("monsterHp");
         this.speed = 100.0f;
-        this.route = map.getRoutes().get(routeIndex);
+        this.routeIndex = routeIndex;
+        this.route = map.getRoutes().get(this.routeIndex);
         this.offsetX = MathUtils.random(10, 70);
         this.offsetY = MathUtils.random(10, 70);
         this.position = new Vector2(route.getStartX() * 80 + offsetX, route.getStartY() * 80 + offsetY);
@@ -81,7 +85,8 @@ public class Monster {
     public void activate(int routeIndex) {
         this.offsetX = MathUtils.random(10, 70);
         this.offsetY = MathUtils.random(10, 70);
-        this.route = map.getRoutes().get(routeIndex);
+        this.routeIndex = routeIndex;
+        this.route = map.getRoutes().get(this.routeIndex);
         this.position.set(route.getStartX() * 80 + offsetX, route.getStartY() * 80 + offsetY);
         this.lastCellX = route.getStartX();
         this.lastCellY = route.getStartY();
@@ -127,5 +132,16 @@ public class Monster {
                 velocity.set(route.getDirections()[routeCounter].x * speed, route.getDirections()[routeCounter].y * speed);
             }
         }
+    }
+
+    public void reload(TextureAtlas atlas, Map map){
+        this.map = map;
+        this.texture = atlas.findRegion("monster");
+        this.textureBackHp = atlas.findRegion("monsterBackHP");
+        this.textureHp = atlas.findRegion("monsterHp");
+        this.route = map.getRoutes().get(this.routeIndex);
+        sbHUD = new StringBuilder(20);
+        sbHUD.setLength(0);
+        sbHUD.append(hp);
     }
 }

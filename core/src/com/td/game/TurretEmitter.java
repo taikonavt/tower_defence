@@ -54,7 +54,7 @@ public class TurretEmitter implements Serializable {
     private transient TextureAtlas atlas;
     private transient Map map;
     private Turret[] turrets;
-    private TurretTemplate[] templates;
+    private transient TurretTemplate[] templates;
 
     public TurretEmitter(TextureAtlas atlas, GameScreen gameScreen, Map map) {
         this.loadTurretData();
@@ -136,23 +136,15 @@ public class TurretEmitter implements Serializable {
         }
     }
 
-//    public void reload(TextureAtlas atlas, GameScreen gameScreen, Map map){
-//        this.loadTurretData();
-//        this.gameScreen = gameScreen;
-//        this.map = map;
-//        this.atlas = atlas;
-//        this.turrets =
-//    }
-//    public TurretEmitter(TextureAtlas atlas, GameScreen gameScreen, Map map) {
-//        this.loadTurretData();
-//        this.gameScreen = gameScreen;
-//        this.map = map;
-//        this.atlas = atlas;
-//        this.turrets = new Turret[20];
-//        TextureRegion[] regions = new TextureRegion(atlas.findRegion("turrets")).split(80, 80)[0];
-//        for (int i = 0; i < turrets.length; i++) {
-//            turrets[i] = new Turret(regions, gameScreen, map, 0, 0);
-//        }
-//    }
+    public void reload(TextureAtlas atlas, GameScreen gameScreen, Map map){
+        this.loadTurretData();
+        this.gameScreen = gameScreen;
+        this.map = map;
+        this.atlas = atlas;
+        TextureRegion[] regions = new TextureRegion(atlas.findRegion("turrets")).split(80, 80)[0];
+        for (int i = 0; i < turrets.length; i++) {
+            turrets[i].reload(regions, gameScreen, map);
+        }
+    }
 }
 

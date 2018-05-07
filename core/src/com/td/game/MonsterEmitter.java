@@ -7,10 +7,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MonsterEmitter {
+public class MonsterEmitter implements Serializable {
     public class Wave {
         private float time;
         private int routeIndex;
@@ -23,9 +24,9 @@ public class MonsterEmitter {
         }
     }
 
-    private Map map;
+    private transient Map map;
     private Monster[] monsters;
-    private Wave[] waves;
+    private transient Wave[] waves;
     private float spawnTimer;
     private int currentWave;
 
@@ -105,5 +106,11 @@ public class MonsterEmitter {
         }
     }
 
-
+    public void reload(TextureAtlas atlas, Map map){
+        this.map = map;
+        loadScenario("scenario1");
+        for (int i = 0; i < monsters.length; i++) {
+            this.monsters[i].reload(atlas, map);
+        }
+    }
 }
